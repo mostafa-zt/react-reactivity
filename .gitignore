@@ -8,3 +8,4 @@ wwwroot
 node_modules
 build
 Migrations
+publish

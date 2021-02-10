@@ -30,6 +30,7 @@ using Infrastructure.Photos;
 using API.SignalR;
 using Application.Profiles;
 // using FluentValidation.AspNetCore;
+using Microsoft.EntityFrameworkCore.SqlServer;
 
 namespace API
 {
@@ -43,12 +44,46 @@ namespace API
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public void ConfigureDevelopmentServices(IServiceCollection services)
         {
             services.AddDbContext<DataContext>(optionsAction =>
             {
                 optionsAction.UseSqlite(Configuration.GetConnectionString("DefaultConnection"));
             });
+
+            services.AddMvc(opt =>
+           {
+               opt.EnableEndpointRouting = false;
+               // Every request handled with authorization
+               var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+               opt.Filters.Add(new AuthorizeFilter(policy));
+           })
+           .AddFluentValidation(configurationExpression => configurationExpression.RegisterValidatorsFromAssemblyContaining<Create>());
+
+            ConfigureServices(services);
+        }
+
+        public void ConfigureProductionServices(IServiceCollection services)
+        {
+            services.AddDbContext<DataContext>(optionsAction =>
+            {
+                optionsAction.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            });
+
+            services.AddMvc(opt =>
+            {
+                opt.EnableEndpointRouting = false;
+                // Every request handled with authorization
+                var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+                opt.Filters.Add(new AuthorizeFilter(policy));
+            })
+            .AddFluentValidation(configurationExpression => configurationExpression.RegisterValidatorsFromAssemblyContaining<Create>());
+
+            ConfigureServices(services);
+        }
+
+        public void ConfigureServices(IServiceCollection services)
+        {
             services.AddCors(opt =>
             {
                 opt.AddPolicy("CorsPolicy", policy =>
@@ -57,13 +92,7 @@ namespace API
                 });
             });
             services.AddSignalR();
-            services.AddMvc(opt =>
-            {
-                // Every request handled with authorization
-                var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
-                opt.Filters.Add(new AuthorizeFilter(policy));
-            })
-            .AddFluentValidation(configurationExpression => configurationExpression.RegisterValidatorsFromAssemblyContaining<Create>());
+
             services.AddMediatR(typeof(List.Handler).Assembly);
             services.AddAutoMapper(typeof(List.Handler));
             services.AddControllers();
@@ -138,23 +167,22 @@ namespace API
             }
 
             // app.UseHttpsRedirection();
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
             app.UseCors("CorsPolicy");
             app.UseRouting();
             app.UseAuthorization();
             app.UseAuthentication();
             app.UseSignalR(routes => { routes.MapHub<ChatHub>("/chat"); });
-            app.UseEndpoints(endpoints =>
+            // app.UseEndpoints(endpoints =>
+            // {
+            //     endpoints.MapControllers();
+            // });
+            app.UseMvc(rootes =>
             {
-                endpoints.MapControllers();
+                rootes.MapSpaFallbackRoute(name: "spa-fallback", defaults: new { controller = "Fallback", action = "Index" });
             });
-        }
-        private bool LifetimeValidator(DateTime? notBefore, DateTime? expires, SecurityToken token, TokenValidationParameters @params)
-        {
-            if (expires != null)
-            {
-                return expires > DateTime.UtcNow;
-            }
-            return false;
+
         }
     }
 }
