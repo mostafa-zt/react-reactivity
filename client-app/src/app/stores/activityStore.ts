@@ -72,7 +72,7 @@ export default class ActivityStore {
             .configureLogging(LogLevel.Information)
             .build();
 
-        this.hubConnection.start().then(() => console.log(this.hubConnection!.state)).catch(error => console.log('Error establishing connection: ' + error));
+        this.hubConnection.start().then(() => { }).catch(error => { });
         this.hubConnection.on('ReceiveComment', comment => {
             runInAction(() => {
                 this.selectedActivity!.comments.push(comment);
