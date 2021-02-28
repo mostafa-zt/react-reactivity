@@ -45,15 +45,14 @@ const ActivityListItem: React.FC<{ activity: IActivity }> = ({ activity }) => {
                 <Icon name='marker' /> {activity.venue}, {activity.city}
             </Segment>
             <Segment secondary>
-                Attendence will go here
-            </Segment>
-            <Segment secondary>
                 <ActivityListItemAttendees attendees={activity.attendees} />
             </Segment>
             <Segment clearing>
                 <span>{activity.description}</span>
-                <Button as={Link} to={`/activities/${activity.id}`} onClick={() => selectActivity(activity.id)} floated='right' content='View' color='blue' />
-                <Button onClick={() => deleteActivity(activity.id)} floated='right' content='Delete' color='red' />
+                <div className="buttons_section">
+                    <Button as={Link} to={`/activities/${activity.id}`} onClick={() => selectActivity(activity.id)} floated='right' content='View' color='blue' />
+                    <Button onClick={() => deleteActivity(activity.id)} floated='right' content='Delete' color='red' />
+                </div>
             </Segment>
         </Segment.Group>
 

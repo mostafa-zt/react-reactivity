@@ -49,7 +49,7 @@ body {
 
 /*end home page styles*/
 
-.ui.basic.red.label{
+.ui.basic.red.label {
   margin-top: 5px;
   width: 100%;
 }
@@ -68,15 +68,27 @@ body {
   cursor: pointer;
 }
 
-.dropZoneBox:hover, .dropZoneBox.active {
+.dropZoneBox:hover,
+.dropZoneBox.active {
   border: 2px dashed rgb(16, 219, 16);
 }
 
-.profile_bio{
+.profile_bio {
   white-space: pre-line;
   border: 1px solid #2197ae;
   border-radius: 5px;
   margin: 25px 15px;
   background-color: #eff2f3;
   box-shadow: 1px 1px 1px 2px #e2ffffa3;
+}
+
+.buttons_section {
+  margin-top: 7px;
+  display: flex;;
+  place-content: flex-end;;
+  justify-content: flex-end;
+}
+
+.ui.items > .item > .image > img {
+  border-radius: inherit!important;
 }
