@@ -5,5 +5,6 @@ Technologies and frameworks:
 •	.Net Core 3.1
 •	Entity Framework Core
 •	Microsoft SQL Server
-•   React (React Hooks, TypeScript, MobX)
-•   TypeScript
+• ASP.NET Core Identity
+• React (React Hooks, TypeScript, MobX)
+• TypeScript
