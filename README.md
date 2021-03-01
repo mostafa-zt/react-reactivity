@@ -8,3 +8,4 @@ Technologies and frameworks:
 • ASP.NET Core Identity
 • React (React Hooks, TypeScript, MobX)
 • TypeScript
+• SignalR
